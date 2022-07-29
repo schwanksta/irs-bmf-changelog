@@ -32,14 +32,13 @@ jobs:
     - name: Fetch latest data
       run: |-
         # Take all the existing state files and make one big file to compare to
-        #csvstack *.csv > bmf-old.csv
-        cp eo_fl.csv eo_fl-old.csv
+        csvstack *.csv > bmf-old.csv
         # Get all of the state files
         wget -i url_list.txt --quiet
         # Take all of the new state files and make another big file
-        #csvstack *.csv > bmf.csv
+        csvstack *.csv > bmf.csv
         # Diff the changes and generate commit message using csv-diff
-        csv-diff eo_fl-old.csv eo_fl.csv --key=EIN --singular=nonprofit --plural=nonprofits > message.txt
+        csv-diff bmf-old.csv bmf.csv --key=EIN --singular=nonprofit --plural=nonprofits > message.txt
     - name: Commit and push if it changed
       run: |-
         git config user.name "Automated"
