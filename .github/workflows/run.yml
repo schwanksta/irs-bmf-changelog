@@ -41,8 +41,7 @@ jobs:
         # Take all of the new state files and make another big file
         csvstack *.csv > bmf.csv
         # Diff the changes and generate commit message using csv-diff
-        ./bin/csvdiff bmf-old.csv bmf.csv > message.txt
-        echo "Message:"
+        ./bin/csvdiff bmf-old.csv bmf.csv | tee > message.txt
         cat message.txt
     - name: Commit and push if it changed
       run: |-
