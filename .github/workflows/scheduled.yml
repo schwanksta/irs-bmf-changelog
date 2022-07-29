@@ -44,6 +44,8 @@ jobs:
         csvstack *.csv > bmf.csv
         # Diff the changes and generate commit message using csv-diff. csvdiff outputs summaries to stderr.
         ./bin/csvdiff bmf-old.csv bmf.csv 2> message.txt
+        # Put the commit message on one line
+        sed -z 's/\n#/ \|/g' -i message.txt
         # Output the message
         echo "-------"
         cat message.txt
