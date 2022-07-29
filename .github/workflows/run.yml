@@ -1,1 +1,49 @@
 
+name: Get latest data
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron:  '00 13 * * *'
+
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out this repo
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - uses: actions/cache@v2
+      name: Configure pip caching
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Install Python dependencies
+      run: |-
+        pip install -r requirements.txt
+    - name: Fetch latest data
+      run: |-
+        # Take all the state files and make one big file to compare to
+        csvstack *.csv > bmf-old.csv
+        # Get all of the state files
+        wget -i url_list.txt --quiet
+        # Remove heading line and use it to start a new file
+        csvstack *.csv > bmf.csv
+        # Generate commit message using csv-diff
+        csv-diff bmf-old.csv bmf.csv --key=EIN --singular=nonprofit --plural=nonprofits > message.txt
+    - name: Commit and push if it changed
+      run: |-
+        git config user.name "Automated"
+        git config user.email "actions@users.noreply.github.com"
+        git add eo_*.csv
+        timestamp=$(date -u)
+        git commit -F message.txt || exit 0
+        git push
