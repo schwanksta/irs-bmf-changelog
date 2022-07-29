@@ -31,13 +31,13 @@ jobs:
         pip install -r requirements.txt
     - name: Fetch latest data
       run: |-
-        # Take all the state files and make one big file to compare to
+        # Take all the existing state files and make one big file to compare to
         csvstack *.csv > bmf-old.csv
         # Get all of the state files
         wget -i url_list.txt --quiet
-        # Remove heading line and use it to start a new file
+        # Take all of the new state files and make another big file
         csvstack *.csv > bmf.csv
-        # Generate commit message using csv-diff
+        # Diff the changes and generate commit message using csv-diff
         csv-diff bmf-old.csv bmf.csv --key=EIN --singular=nonprofit --plural=nonprofits > message.txt
     - name: Commit and push if it changed
       run: |-
