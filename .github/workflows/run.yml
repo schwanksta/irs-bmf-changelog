@@ -36,13 +36,14 @@ jobs:
       run: |-
         # Take all the existing state files and make one big file to compare to
         csvstack *.csv > bmf-old.csv
+        # Delete all the old files now.
         rm eo_*.csv
         # Get all of the state files
         wget -i url_list.txt --quiet
         # Take all of the new state files and make another big file
         csvstack *.csv > bmf.csv
-        # Diff the changes and generate commit message using csv-diff
-        ./bin/csvdiff bmf-old.csv bmf.csv | tee > message.txt
+        # Diff the changes and generate commit message using csv-diff. csvdiff outputs summaries to stderr.
+        ./bin/csvdiff bmf-old.csv bmf.csv 2> message.txt
         # Output the message
         echo "-------"
         cat message.txt
