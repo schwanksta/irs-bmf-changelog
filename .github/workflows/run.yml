@@ -36,12 +36,15 @@ jobs:
       run: |-
         # Take all the existing state files and make one big file to compare to
         csvstack *.csv > bmf-old.csv
+        rm *.csv
         # Get all of the state files
         wget -i url_list.txt --quiet
         # Take all of the new state files and make another big file
-        csvstack *.csv.1 > bmf.csv
+        csvstack *.csv > bmf.csv
         # Diff the changes and generate commit message using csv-diff
         ./bin/csvdiff bmf-old.csv bmf.csv | tee > message.txt
+        # Output the message
+        echo "-------"
         cat message.txt
     - name: Commit and push if it changed
       run: |-
