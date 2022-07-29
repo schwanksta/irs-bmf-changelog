@@ -39,7 +39,7 @@ jobs:
         # Get all of the state files
         wget -i url_list.txt --quiet
         # Take all of the new state files and make another big file
-        csvstack *.csv > bmf.csv
+        csvstack *.csv.1 > bmf.csv
         # Diff the changes and generate commit message using csv-diff
         ./bin/csvdiff bmf-old.csv bmf.csv | tee > message.txt
         cat message.txt
