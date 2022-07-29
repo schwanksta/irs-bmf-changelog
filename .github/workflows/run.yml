@@ -26,9 +26,12 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-    - name: Install Python dependencies
+    - name: Install dependencies
       run: |-
+        # Pip
         pip install -r requirements.txt
+        # csvdiff
+        curl -sfL https://raw.githubusercontent.com/aswinkarthik/csvdiff/master/install.sh | sh -s
     - name: Fetch latest data
       run: |-
         # Take all the existing state files and make one big file to compare to
@@ -38,7 +41,7 @@ jobs:
         # Take all of the new state files and make another big file
         csvstack *.csv > bmf.csv
         # Diff the changes and generate commit message using csv-diff
-        csv-diff bmf-old.csv bmf.csv --key=EIN --singular=nonprofit --plural=nonprofits > message.txt
+        csvdiff bmf-old.csv bmf.csv > message.txt
     - name: Commit and push if it changed
       run: |-
         git config user.name "Automated"
