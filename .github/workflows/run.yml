@@ -41,7 +41,7 @@ jobs:
         # Take all of the new state files and make another big file
         csvstack *.csv > bmf.csv
         # Diff the changes and generate commit message using csv-diff
-        csvdiff bmf-old.csv bmf.csv > message.txt
+        ./bin/csvdiff bmf-old.csv bmf.csv > message.txt
     - name: Commit and push if it changed
       run: |-
         git config user.name "Automated"
