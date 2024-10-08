@@ -37,7 +37,7 @@ jobs:
         # Take all the existing state files and make one big file to compare to
         csvstack *.csv > bmf-old.csv
         # Delete all the old files now.
-        rm eo_*.csv
+        rm eo*.csv
         # Get all of the state files
         wget -i url_list.txt --quiet
         # Take all of the new state files and make another big file
